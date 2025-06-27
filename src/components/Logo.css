@@ -1,0 +1,91 @@
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.logo-image {
+  height: auto;
+  max-height: 100%;
+  width: auto;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin: 0;
+  line-height: 1.1;
+  color: var(--white);
+  text-transform: uppercase;
+}
+
+.logo-subtitle {
+  color: var(--accent-color);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  font-weight: 600;
+  font-size: 0.7em;
+  margin-left: var(--spacing-sm);
+  font-family: var(--font-primary);
+  letter-spacing: 1px;
+}
+
+/* Tamanhos do logo */
+.logo-container.small .logo-title {
+  font-size: var(--font-size-lg);
+  letter-spacing: 1px;
+}
+
+.logo-container.medium .logo-title {
+  font-size: var(--font-size-2xl);
+  letter-spacing: 1.5px;
+}
+
+.logo-container.large .logo-title {
+  font-size: var(--font-size-3xl);
+  letter-spacing: 2px;
+}
+
+.logo-container.xlarge .logo-title {
+  font-size: var(--font-size-4xl);
+  letter-spacing: 2.5px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .logo-container.large .logo-title,
+  .logo-container.xlarge .logo-title {
+    font-size: var(--font-size-2xl);
+    letter-spacing: 1.5px;
+  }
+  
+  .logo-container.medium .logo-title {
+    font-size: var(--font-size-xl);
+    letter-spacing: 1px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-container.large .logo-title,
+  .logo-container.xlarge .logo-title {
+    font-size: var(--font-size-xl);
+    letter-spacing: 1px;
+  }
+  
+  .logo-container.medium .logo-title {
+    font-size: var(--font-size-lg);
+    letter-spacing: 0.5px;
+  }
+  
+  .logo-container.small .logo-title {
+    font-size: var(--font-size-base);
+    letter-spacing: 0.5px;
+  }
+} 

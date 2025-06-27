@@ -1,0 +1,48 @@
+.add-produto-page {
+  max-width: 500px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 32px 24px 24px 24px;
+}
+.add-produto-form .form-group {
+  margin-bottom: 18px;
+}
+.add-produto-form label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+.add-produto-form input,
+.add-produto-form select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 1rem;
+  background: #f9fafb;
+}
+.btn-adicionar {
+  background: #2d8cff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-adicionar:hover {
+  background: #1a6ed8;
+}
+.mensagem-sucesso {
+  background: #e6ffed;
+  color: #1a7f37;
+  border: 1px solid #b7eb8f;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 18px;
+  text-align: center;
+  font-weight: 500;
+} 

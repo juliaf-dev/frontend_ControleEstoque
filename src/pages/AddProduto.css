@@ -1,0 +1,110 @@
+.add-produto-page {
+  max-width: 400px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  padding: 32px 24px;
+}
+
+.add-produto-page h1 {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #2d3a4b;
+}
+
+.add-produto-form .form-group {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.add-produto-form label {
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #3a4a5d;
+}
+
+.add-produto-form input,
+.add-produto-form select {
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #f9fafb;
+  transition: border 0.2s;
+}
+
+.add-produto-form input:focus,
+.add-produto-form select:focus {
+  border: 1.5px solid #4f8cff;
+  outline: none;
+}
+
+.btn-adicionar {
+  width: 100%;
+  padding: 10px 0;
+  background: #4f8cff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.2s;
+}
+
+.btn-adicionar:hover {
+  background: #2563eb;
+}
+
+.erro-categorias {
+  color: #fff;
+  background: #e74c3c;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.resumo-compra {
+  background: #f5f7fa;
+  border-radius: 8px;
+  padding: 24px 18px;
+  margin-top: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  text-align: left;
+}
+.resumo-compra h2 {
+  text-align: center;
+  color: #2d3a4b;
+  margin-bottom: 18px;
+}
+.resumo-compra ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px 0;
+}
+.resumo-compra li {
+  margin-bottom: 8px;
+  font-size: 1.05rem;
+}
+
+.lista-notas-fiscais {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 24px;
+}
+.nota-fiscal-item {
+  background: #f5f7fa;
+  border-radius: 8px;
+  padding: 18px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  font-size: 1.05rem;
+}
+.nota-fiscal-item > div {
+  margin-bottom: 6px;
+} 

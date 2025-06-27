@@ -1,0 +1,115 @@
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: var(--font-secondary);
+  color: var(--primary-color);
+  background: linear-gradient(135deg, #e3f0ff 0%, #fafdff 100%);
+}
+
+#root {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 3rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--primary-color);
+  font-family: var(--font-secondary);
+  font-weight: 900;
+  margin-bottom: 0.7em;
+  letter-spacing: 1.5px;
+  line-height: 1.1;
+}
+
+h1 {
+  font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+h2 {
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.decorative-bar {
+  width: 48px;
+  height: 6px;
+  background: var(--secondary-color);
+  border-radius: 3px;
+  margin: 0.5rem 0 1.5rem 0;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  background: var(--white);
+  border-radius: var(--border-radius-xl);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  padding: 2.5rem 2rem;
+  margin-bottom: 2.5rem;
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.2s, transform 0.2s;
+  position: relative;
+}
+
+.card:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+  transform: translateY(-4px) scale(1.01);
+}
+
+.card .fa-icon {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  font-size: 2.2rem;
+}
+
+.read-the-docs {
+  color: var(--gray);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: var(--light-gray);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--primary-light);
+  border-radius: 8px;
+}

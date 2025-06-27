@@ -1,0 +1,72 @@
+:root {
+  /* Paleta de Cores Principal - Identidade Visual da Loja */
+  --primary-color: #0057b8; /* Azul principal */
+  --primary-dark: #003974;  /* Azul escuro */
+  --primary-light: #4da3ff; /* Azul claro */
+  
+  --secondary-color: #ffd600; /* Amarelo vibrante */
+  --secondary-dark: #bfa700;
+  --secondary-light: #fff176;
+  
+  --accent-color: #ff1744; /* Vermelho destaque */
+  --accent-dark: #b2102f;
+  --accent-light: #ff616f;
+  
+  /* Cores Neutras */
+  --white: #FFFFFF;
+  --light-gray: #F5F5F5;
+  --gray: #666666;
+  --dark-gray: #333333;
+  --black: #1a1a1a;
+  
+  /* Cores de Status */
+  --success: #228B22;
+  --warning: #FF8C00;
+  --error: #DC143C;
+  --info: #4169E1;
+  
+  /* Tipografia */
+  --font-primary: 'Georgia', 'Times New Roman', serif;
+  --font-secondary: 'Arial', sans-serif;
+  
+  /* Tamanhos de Fonte */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  
+  /* Espaçamentos */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  
+  /* Bordas */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  
+  /* Sombras */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.25);
+  
+  /* Transições */
+  --transition-fast: 0.15s ease-in-out;
+  --transition-normal: 0.3s ease-in-out;
+  --transition-slow: 0.5s ease-in-out;
+  
+  /* Gradientes */
+  --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-light) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-light) 100%);
+  --gradient-elegant: linear-gradient(135deg, #1a1a1a 0%, #333333 50%, #1a1a1a 100%);
+} 
