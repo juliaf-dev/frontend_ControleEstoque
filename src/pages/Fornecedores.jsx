@@ -76,8 +76,8 @@ export default function Fornecedores() {
 
   return (
     <div className="fornecedores-page">
-      <Voltar />
-      <h1>Fornecedores</h1>
+      <Voltar showHome={true} title="Voltar aos Fornecedores" />
+      <h1>Gerenciar Fornecedores</h1>
       <div className="filtros-fornecedores">
         <input
           type="text"

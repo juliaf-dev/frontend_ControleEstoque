@@ -154,7 +154,7 @@ export default function Vendas() {
 
   return (
     <div className="vendas-page">
-      <Voltar />
+      <Voltar showHome={true} title="Voltar ao Caixa" />
       <h1><FontAwesomeIcon icon={faReceipt} style={{marginRight: '0.5rem'}} />Vendas</h1>
       <div className="vendas-layout">
         <div className="vendas-form">

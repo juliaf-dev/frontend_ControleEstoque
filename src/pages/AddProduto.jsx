@@ -32,25 +32,31 @@ function AddProduto() {
   useEffect(() => {
     async function fetchProdutos() {
       try {
-        const data = await productService.getProducts();
-        setProdutos(data.data || []);
+        const response = await productService.getProducts();
+        setProdutos(response.data || []);
       } catch (error) {
         setProdutos([]);
       }
     }
     async function fetchCategorias() {
       try {
-        const data = await categoryService.getCategories();
-        setCategorias(data.data || []);
+        const response = await categoryService.getCategories();
+        setCategorias(response.data || []);
       } catch (error) {
         setCategorias([]);
       }
     }
-    // Fornecedores fake para simulação
-    const fornecedoresFake = fornecedorService.getFakeFornecedores();
-    setFornecedores(fornecedoresFake);
+    async function fetchFornecedores() {
+      try {
+        const response = await fornecedorService.getFornecedores();
+        setFornecedores(response.data || []);
+      } catch (error) {
+        setFornecedores([]);
+      }
+    }
     fetchProdutos();
     fetchCategorias();
+    fetchFornecedores();
   }, []);
 
   useEffect(() => {
@@ -151,7 +157,7 @@ function AddProduto() {
 
   return (
     <div className="add-produto-page">
-      <Voltar />
+      <Voltar to="/compras" title="Voltar às Compras" showHome={true} />
       <h1>Registrar Compra de Produto</h1>
       {erro && <div className="erro-categorias">{erro}</div>}
       {erroFornecedor && <div className="erro-categorias">{erroFornecedor}</div>}

@@ -97,7 +97,7 @@ function Compra() {
 
   return (
     <div className="compras-page">
-      <Voltar />
+      <Voltar showHome={true} title="Voltar às Compras" />
       <h1>Notas Fiscais de Compras</h1>
       <div className="filtros-compras">
         <input

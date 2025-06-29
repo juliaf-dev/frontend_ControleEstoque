@@ -69,8 +69,8 @@ function Clients() {
 
   return (
     <div className="clients-page">
-      <Voltar />
-      <h1>Clientes</h1>
+      <Voltar showHome={true} title="Voltar aos Clientes" />
+      <h1>Gerenciar Clientes</h1>
       {erro && <div className="erro-clients">{erro}</div>}
       {sucesso && <div className="mensagem-sucesso">{sucesso}</div>}
       <div className="filtros-clients">

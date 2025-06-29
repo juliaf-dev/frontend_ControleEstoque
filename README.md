@@ -28,12 +28,10 @@ O frontend está configurado para funcionar tanto em desenvolvimento local quant
 - Não é necessária configuração adicional
 
 #### Para Produção (Render):
-1. Crie um arquivo `.env.local` na raiz do projeto:
-```env
-VITE_API_URL=https://seu-app.onrender.com
-```
-
-2. Ou edite o arquivo `src/config/environment.js` e atualize a URL de produção.
+O projeto já está configurado para usar o backend no Render:
+- **URL da API**: `https://controle-estoque-1-a3g1.onrender.com`
+- **Arquivo de configuração**: `src/config/environment.js`
+- **Variável de ambiente**: `VITE_API_URL` (já configurada no `.env`)
 
 ### 3. Executar o Projeto
 
