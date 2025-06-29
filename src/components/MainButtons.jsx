@@ -12,11 +12,11 @@ export default function MainButtons() {
       <button onClick={() => navigate('/historico-vendas')}>
         <span>Histórico de Vendas</span>
       </button>
-      <button onClick={() => navigate('/caixa')}>
-        <span>Caixa</span>
+      <button onClick={() => navigate('/vendas')}>
+        <span>Vendas</span>
       </button>
       <button onClick={() => navigate('/compras')}>
-        <span>Compras</span>
+        <span>Histórico de Compras</span>
       </button>
       <button onClick={() => navigate('/clientes')}>
         <span>Clientes</span>

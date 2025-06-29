@@ -1,75 +1,75 @@
 .recuperar-container {
   max-width: 400px;
   margin: 60px auto;
-  padding: var(--spacing-2xl);
-  background: var(--white);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-lg);
+  padding: 2rem;
+  background: #fafbfc;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 64, 128, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
   animation: fadeIn 0.5s ease-out;
-  border: 1px solid var(--light-gray);
+  border: 1px solid rgba(0, 64, 128, 0.05);
 }
 
 .recuperar-container h2 {
-  margin-bottom: var(--spacing-xl);
-  color: var(--primary-color);
-  font-size: var(--font-size-3xl);
-  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #004080;
+  font-size: 2.2rem;
+  font-weight: 600;
   text-align: center;
-  font-family: var(--font-primary);
-  letter-spacing: 1px;
-  text-transform: uppercase;
+  background: linear-gradient(135deg, #004080 0%, #005bac 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .recuperar-container form {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: 1.5rem;
 }
 
 .recuperar-container input {
-  padding: var(--spacing-lg);
-  border: 2px solid var(--gray);
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-base);
-  transition: all var(--transition-fast);
-  background-color: var(--white);
-  font-family: var(--font-secondary);
+  padding: 0.8rem;
+  border: 1px solid rgba(0, 64, 128, 0.2);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: #fafbfc;
+  color: #004080;
 }
 
 .recuperar-container input:focus {
-  border-color: var(--secondary-color);
-  box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+  border-color: #005bac;
+  box-shadow: 0 0 0 3px rgba(0, 91, 172, 0.1);
+  background: white;
   transform: translateY(-1px);
 }
 
 .recuperar-container input:disabled {
-  background-color: var(--light-gray);
+  background-color: #e2e8f0;
   cursor: not-allowed;
 }
 
 .recuperar-container button {
-  padding: var(--spacing-lg);
-  background: var(--gradient-elegant);
-  color: var(--white);
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #004080 0%, #005bac 100%);
+  color: white;
   border: none;
-  border-radius: var(--border-radius-md);
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  font-size: var(--font-size-lg);
-  transition: all var(--transition-fast);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-family: var(--font-secondary);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 64, 128, 0.2);
 }
 
 .recuperar-container button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-  background: var(--gradient-secondary);
+  box-shadow: 0 4px 12px rgba(0, 64, 128, 0.3);
+  background: linear-gradient(135deg, #005bac 0%, #0077cc 100%);
 }
 
 .recuperar-container button:disabled {
@@ -79,52 +79,50 @@
 }
 
 .recuperar-container .mensagem {
-  color: var(--success);
-  font-size: var(--font-size-sm);
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-md);
-  background-color: rgba(34, 139, 34, 0.1);
-  border-radius: var(--border-radius-sm);
-  border-left: 4px solid var(--success);
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
   text-align: center;
-  font-family: var(--font-secondary);
+  font-weight: 500;
 }
 
 .recuperar-container .erro {
-  color: var(--error);
-  font-size: var(--font-size-sm);
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-sm);
-  background-color: rgba(220, 20, 60, 0.1);
-  border-radius: var(--border-radius-sm);
-  border-left: 4px solid var(--error);
-  font-family: var(--font-secondary);
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: white;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
 }
 
 .recuperar-links {
-  margin-top: var(--spacing-xl);
+  margin-top: 2rem;
   width: 100%;
   text-align: center;
-  font-size: var(--font-size-sm);
+  font-size: 0.9rem;
 }
 
 .recuperar-links span {
-  color: var(--secondary-color);
+  color: #005bac;
   cursor: pointer;
   text-decoration: underline;
-  transition: color var(--transition-fast);
+  transition: color 0.2s ease;
   font-weight: 500;
-  font-family: var(--font-secondary);
 }
 
 .recuperar-links span:hover {
-  color: var(--secondary-dark);
+  color: #004080;
 }
 
 /* Responsividade */
 @media (max-width: 480px) {
   .recuperar-container {
     margin: 20px auto;
-    padding: var(--spacing-xl);
+    padding: 1.5rem;
   }
 } 

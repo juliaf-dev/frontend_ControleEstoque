@@ -3,7 +3,7 @@ import { productService } from '../services/productService';
 import { categoryService } from '../services/categoryService';
 import './ProdutosSection.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faBoxesStacked, faTag, faLayerGroup, faMoneyBillWave, faClipboardList, faIndustry, faFileAlt, faImage } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faBoxesStacked, faTag, faLayerGroup, faMoneyBillWave, faClipboardList, faIndustry, faFileAlt, faImage, faBox, faThLarge, faList } from '@fortawesome/free-solid-svg-icons';
 
 export default function ProdutosSection() {
   const [categoria, setCategoria] = useState('Todos');
@@ -14,6 +14,7 @@ export default function ProdutosSection() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [expanded, setExpanded] = useState({});
   const [fornecedoresPorProduto, setFornecedoresPorProduto] = useState({});
+  const [viewMode, setViewMode] = useState('cards'); // 'cards' ou 'list'
 
   useEffect(() => {
     carregarDados();
@@ -64,6 +65,7 @@ export default function ProdutosSection() {
 
   return (
     <section className="produtos-section">
+      <div className="produtos-controls">
       <div className="filtro-categorias-dropdown">
         <button className="dropdown-toggle" onClick={() => setDropdownOpen(!dropdownOpen)}>
           <FontAwesomeIcon icon={faLayerGroup} style={{marginRight: 8}}/>
@@ -83,31 +85,58 @@ export default function ProdutosSection() {
           </div>
         )}
       </div>
-      <div className="produtos-lista">
+        <div className="view-mode-toggle">
+          <button 
+            className={`view-btn ${viewMode === 'cards' ? 'active' : ''}`} 
+            onClick={() => setViewMode('cards')}
+            title="Visualização em Cards"
+          >
+            <FontAwesomeIcon icon={faThLarge} />
+          </button>
+          <button 
+            className={`view-btn ${viewMode === 'list' ? 'active' : ''}`} 
+            onClick={() => setViewMode('list')}
+            title="Visualização em Lista"
+          >
+            <FontAwesomeIcon icon={faList} />
+          </button>
+        </div>
+      </div>
+      <div className={`produtos-lista ${viewMode === 'list' ? 'list-view' : 'cards-view'}`}>
         {produtosFiltrados.map(produto => (
-          <div className={`produto-card${expanded[produto.id] ? ' expanded' : ''}`} key={produto.id} onClick={() => toggleExpand(produto.id)} tabIndex={0} style={{cursor: 'pointer'}}>
+          <div className={`produto-card${expanded[produto.id] ? ' expanded' : ''} ${viewMode === 'list' ? 'list-item' : ''}`} key={produto.id} onClick={() => toggleExpand(produto.id)} tabIndex={0} style={{cursor: 'pointer'}}>
+            <div className="produto-header">
             <div className="imagem-simulada">
               <FontAwesomeIcon icon={faImage} />
             </div>
+              <div className="produto-info">
             <h3>{produto.nome}</h3>
-            <p>Estoque: {produto.quantidade_estoque}</p>
+                <div className="estoque-info">
+                  <FontAwesomeIcon icon={faBox} />
+                  Estoque: {produto.quantidade_estoque} unidades
+                </div>
+                <div className="preco-info">
+                  <FontAwesomeIcon icon={faMoneyBillWave} />
+                  R$ {parseFloat(produto.valor).toFixed(2)}
+                </div>
+              </div>
+            </div>
             {expanded[produto.id] && (
               <div className="produto-extra">
-                <p>{produto.descricao}</p>
-                <div>
-                  <b>Fornecedores:</b>
+                <p><strong>Descrição:</strong> {produto.descricao}</p>
+                <p><strong>Fornecedores:</strong></p>
                   {fornecedoresPorProduto[produto.id] && fornecedoresPorProduto[produto.id].length > 0 ? (
-                    <ul>
+                  <ul className="fornecedores-lista">
                       {fornecedoresPorProduto[produto.id].map(f => (
-                        <li key={f.id}>{f.nome}</li>
+                      <li key={f.id}>
+                        <FontAwesomeIcon icon={faIndustry} style={{marginRight: 6}}/>
+                        {f.nome}
+                      </li>
                       ))}
                     </ul>
                   ) : (
-                    <span> Sem fornecedores</span>
+                  <p style={{color: 'var(--dark-gray)', fontStyle: 'italic'}}>Sem fornecedores cadastrados</p>
                   )}
-                </div>
-                <p><FontAwesomeIcon icon={faMoneyBillWave} style={{marginRight: 6}}/>R$ {parseFloat(produto.valor).toFixed(2)}</p>
-                <p>Estoque: {produto.quantidade_estoque}</p>
               </div>
             )}
           </div>

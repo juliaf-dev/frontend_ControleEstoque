@@ -7,6 +7,29 @@ body {
 }
 
 #root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Layout para páginas autenticadas */
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem 2rem 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Layout para páginas públicas (login, cadastro, etc.) */
+#root > *:not(.app-layout) {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2.5rem 1.5rem 3rem 1.5rem;

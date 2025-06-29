@@ -3,7 +3,7 @@ import { fornecedorService } from '../services/fornecedorService';
 import './Fornecedores.css';
 import Voltar from '../components/Voltar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faChevronUp, faEdit, faSave, faTimesCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronUp, faEdit, faSave, faTimesCircle, faCheckCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 function getLocalExtras(id) {
   const extras = JSON.parse(localStorage.getItem('fornecedor_extras') || '{}');
@@ -98,15 +98,37 @@ export default function Fornecedores() {
           return (
             <li key={f.id} className="fornecedor-item">
               <div className="fornecedor-cabecalho" onClick={() => handleExpandir(f.id)}>
+                <div className="fornecedor-info">
+                  {ativo ? (
+                    <FontAwesomeIcon icon={faCheckCircle} className="fornecedor-status-icon" />
+                  ) : (
+                    <FontAwesomeIcon icon={faTimesCircle} className="fornecedor-status-icon inativo" />
+                  )}
                 <span className="fornecedor-nome">{f.nome}</span>
-                <span className={`fornecedor-status-badge ${ativo ? 'ativo' : 'inativo'}`}>{ativo ? <FontAwesomeIcon icon={faCheckCircle} /> : <FontAwesomeIcon icon={faTimesCircle} />} {ativo ? 'Ativo' : 'Inativo'}</span>
+                </div>
                 <span className="fornecedor-expand-icon">
                   <FontAwesomeIcon icon={expandido === f.id ? faChevronUp : faChevronDown} />
                 </span>
               </div>
               {expandido === f.id && (
                 <div className="fornecedor-detalhes">
-                  <div><b>Status:</b> {ativo ? 'Ativo' : 'Inativo'}</div>
+                  {editando === f.id ? (
+                    <button className="btn-cancel-icon" onClick={() => setEditando(null)}>
+                      <FontAwesomeIcon icon={faTimes} />
+                    </button>
+                  ) : (
+                    <button className="btn-edit-icon" onClick={() => handleEdit(f.id)}>
+                      <FontAwesomeIcon icon={faEdit} />
+                    </button>
+                  )}
+                  <div><b>Status:</b> {editando === f.id ? (
+                    <select value={f.situacao} onChange={e => setFornecedores(prev => prev.map(item => item.id === f.id ? { ...item, situacao: Number(e.target.value) } : item))}>
+                      <option value={1}>Ativo</option>
+                      <option value={0}>Inativo</option>
+                    </select>
+                  ) : (
+                    ativo ? 'Ativo' : 'Inativo'
+                  )}</div>
                   <div><b>Contato:</b> {editando === f.id ? (
                     <>
                       <input type="email" placeholder="E-mail" value={extra.email || ''} onChange={e => handleChangeExtra(f.id, 'email', e.target.value)} />
@@ -132,10 +154,8 @@ export default function Fornecedores() {
                       ))}
                     </ul>
                   </div>
-                  {editando === f.id ? (
+                  {editando === f.id && (
                     <button className="btn-salvar" onClick={() => handleSave(f.id)}><FontAwesomeIcon icon={faSave} /> Salvar</button>
-                  ) : (
-                    <button className="btn-editar" onClick={() => handleEdit(f.id)}><FontAwesomeIcon icon={faEdit} /> Editar</button>
                   )}
                 </div>
               )}

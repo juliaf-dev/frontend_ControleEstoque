@@ -1,31 +1,98 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import Logo from './Logo';
 import './Header.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBoxOpen, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faSignOutAlt, 
+  faUser
+} from '@fortawesome/free-solid-svg-icons';
 
 export default function Header() {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const location = useLocation();
+  const { logout, user } = useAuth();
+  const [navigationExpanded, setNavigationExpanded] = useState(true);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+
+  useEffect(() => {
+    const handleNavigationChange = (event) => {
+      setNavigationExpanded(event.detail.expandido);
+    };
+
+    document.addEventListener('navigationStateChange', handleNavigationChange);
+    return () => {
+      document.removeEventListener('navigationStateChange', handleNavigationChange);
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
+  const getPageTitle = () => {
+    const pageMap = {
+      '/dashboard': null,
+      '/vendas': 'Vendas',
+      '/add-produto': 'Registrar Compra',
+      '/compras': 'Histórico de Compras',
+      '/historico-vendas': 'Histórico de Vendas',
+      '/fornecedores': 'Fornecedores',
+      '/clients': 'Clientes'
+    };
+    return pageMap[location.pathname] || null;
+  };
+
   return (
-    <header className="header">
-      <Logo size="large" />
-      <div className="header-actions">
-        <button className="add-produto" onClick={() => navigate('/add-produto')}>
-          <FontAwesomeIcon icon={faBoxOpen} style={{ marginRight: 8 }} /> Novo Pedido
-        </button>
-        <button className="sair" onClick={handleLogout}>
-          <FontAwesomeIcon icon={faSignOutAlt} style={{ marginRight: 6 }} /> Sair
-        </button>
+    <header className={`top-header ${navigationExpanded ? 'nav-expanded' : ''}`}>
+      {/* Left Section - Brand */}
+      <div className="header-left">
+        <div className="brand-section">
+          <h1 className="brand-name">Só Bujiganga</h1>
+          <span className="brand-subtitle">Estoque</span>
+        </div>
+        
+        {getPageTitle() && (
+          <div className="page-extension">
+            <span className="page-title">{getPageTitle()}</span>
+          </div>
+        )}
+      </div>
+
+      {/* Right Section */}
+      <div className="header-right">
+        {/* User Menu */}
+        <div className="user-menu-container">
+          <button 
+            className="user-button"
+            onClick={() => setShowUserMenu(!showUserMenu)}
+            title="Menu do Usuário"
+          >
+            <FontAwesomeIcon icon={faUser} />
+            <span className="user-name">{user?.name || 'Usuário'}</span>
+          </button>
+          
+          {showUserMenu && (
+            <div className="user-dropdown">
+              <div className="user-info">
+                <div className="user-avatar">
+                  <FontAwesomeIcon icon={faUser} />
+                </div>
+                <div className="user-details">
+                  <span className="user-full-name">{user?.name || 'Usuário'}</span>
+                  <span className="user-role">Administrador</span>
+                </div>
+              </div>
+              <div className="dropdown-divider"></div>
+              <button className="dropdown-item logout-item" onClick={handleLogout}>
+                <FontAwesomeIcon icon={faSignOutAlt} />
+                <span>Sair</span>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
-} 
+}

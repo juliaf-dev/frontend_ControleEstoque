@@ -1,112 +1,290 @@
-.header {
-  width: 100vw;
-  margin: 0 0 2rem 0;
-  background: var(--primary-color);
-  color: var(--white);
-  border-radius: 0;
-  box-shadow: none;
+/* Header CSS - Reorganizado */
+.top-header {
+  width: calc(100% - 70px);
+  height: 64px;
+  background: linear-gradient(135deg, #004080 0%, #005bac 100%);
+  color: #fff;
+  padding: 0 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem 2.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-family: 'Poppins', sans-serif;
+  z-index: 1001;
+  margin-left: 70px;
+  transition: margin-left 0.3s ease, width 0.3s ease;
 }
 
-.logo {
-  font-size: 2.2rem;
-  font-weight: 900;
-  letter-spacing: 2px;
-  color: var(--white);
-  font-family: var(--font-secondary);
+.top-header.nav-expanded {
+  width: calc(100% - 220px);
+  margin-left: 220px;
+}
+
+.header-left {
   display: flex;
   align-items: center;
+  gap: 1.5rem;
 }
 
-.logo span {
-  color: var(--secondary-color);
-  margin-left: 0.5rem;
-  font-weight: 900;
-}
-
-.header-actions {
+.brand-section {
   display: flex;
-  gap: 1.2rem;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.header-actions button {
-  background: transparent;
-  color: var(--white);
-  border: 2px solid var(--white);
-  border-radius: var(--border-radius-lg);
-  padding: 0.7rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s, border 0.2s, transform 0.2s;
-  box-shadow: none;
+.brand-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: 0.5px;
 }
 
-.header-actions button:hover {
-  background: var(--white);
-  color: var(--primary-color);
-  border: 2px solid var(--primary-color);
-  transform: translateY(-2px) scale(1.04);
+.brand-subtitle {
+  font-size: 0.8rem;
+  color: #ffd600;
+  font-weight: 500;
+  margin-top: -2px;
+  letter-spacing: 0.3px;
 }
 
-.header-actions .sair {
-  background: var(--accent-color);
-  color: var(--white);
+.page-extension {
+  display: flex;
+  align-items: center;
+}
+
+.page-extension:empty {
+  display: none;
+}
+
+.page-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #ffffff;
+  opacity: 0.9;
+  position: relative;
+}
+
+.page-title::before {
+  content: '•';
+  color: #ffd600;
+  margin-right: 0.8rem;
+  font-weight: 300;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+
+.user-menu-container {
+  position: relative;
+}
+
+.user-button {
+  background: rgba(255, 255, 255, 0.1);
   border: none;
+  color: white;
+  padding: 0.5rem 1rem;
   border-radius: 8px;
-  padding: 0.3rem 0.9rem;
-  font-size: 0.85rem;
-  font-weight: 700;
-  min-width: 0;
-  height: 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.user-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  min-width: 250px;
+  margin-top: 0.5rem;
+  animation: slideUp 0.3s ease;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #004080 0%, #005bac 100%);
+  color: white;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.2rem;
 }
 
-.header-actions .sair:hover {
-  background: var(--accent-light);
-  color: var(--white);
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.user-full-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.user-role {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: #f0f0f0;
+  margin: 0.5rem 0;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: none;
   border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.dropdown-item:hover {
+  background: #f8f9fa;
+}
+
+.dropdown-item svg {
+  width: 16px;
+  color: #666;
+}
+
+.logout-item {
+  color: #dc3545;
+}
+
+.logout-item svg {
+  color: #dc3545;
+}
+
+.logout-item:hover {
+  background: #fff5f5;
 }
 
 /* Responsividade */
+@media (max-width: 1200px) {
+  .header-left {
+    gap: 1rem;
+  }
+  
+  .brand-name {
+    font-size: 1.2rem;
+  }
+  
+  .page-title {
+    font-size: 1rem;
+  }
+}
+
 @media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    gap: var(--spacing-md);
-    padding: var(--spacing-md);
+  .top-header {
+    padding: 0 1rem;
   }
-  .logo {
-    font-size: var(--font-size-2xl);
+  
+  .header-left {
+    gap: 0.8rem;
   }
-  .header-actions {
-    width: 100%;
-    justify-content: center;
+  
+  .brand-name {
+    font-size: 1.1rem;
   }
-  .header-actions button {
-    flex: 1;
-    max-width: 150px;
+  
+  .brand-subtitle {
+    font-size: 0.7rem;
+  }
+  
+  .page-title {
+    font-size: 0.9rem;
+  }
+  
+  .page-title::before {
+    margin-right: 0.6rem;
+  }
+  
+  .time-date {
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .user-name {
+    display: none;
+  }
+  
+  .header-right {
+    gap: 0.5rem;
   }
 }
 
 @media (max-width: 480px) {
-  .header {
-    padding: var(--spacing-sm);
+  .top-header {
+    padding: 0 0.5rem;
   }
-  .logo {
-    font-size: var(--font-size-xl);
+  
+  .brand-name {
+    font-size: 1rem;
   }
-  .header-actions {
-    flex-direction: column;
-    width: 100%;
+  
+  .brand-subtitle {
+    font-size: 0.65rem;
   }
-  .header-actions button {
-    max-width: none;
+  
+  .page-extension {
+    display: none;
+  }
+  
+  .time-date {
+    padding: 0.3rem 0.6rem;
+  }
+  
+  .time-info {
+    display: none;
+  }
+  
+  .user-button {
+    padding: 0.4rem;
   }
 } 
