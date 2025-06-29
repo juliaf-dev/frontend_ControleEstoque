@@ -15,7 +15,7 @@ import {
   faChartLine,
   faCog
 } from '@fortawesome/free-solid-svg-icons';
-import './Navegacao.css';
+import './navegacao.css';
 
 export default function Navegacao() {
   const navigate = useNavigate();
