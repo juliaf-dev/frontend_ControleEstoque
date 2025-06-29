@@ -1,66 +1,93 @@
 .main-buttons {
   display: flex;
   justify-content: center;
-  gap: 2rem;
-  margin: 2.5rem 0 1.5rem 0;
-  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin: 3rem 0 2rem 0;
+  flex-wrap: nowrap;
+  width: 100%;
 }
 
 .main-buttons button {
-  min-width: 200px;
-  padding: 1.2rem 2.2rem;
-  font-size: 1.15rem;
-  font-weight: 800;
-  border: 2.5px solid var(--primary-color);
-  border-radius: var(--border-radius-xl);
-  background: transparent;
-  color: var(--primary-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 120px;
+  padding: 1.2rem 0.8rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 1.2rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  color: var(--white);
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, border 0.2s, transform 0.2s;
-  margin-bottom: 1rem;
+  transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
   font-family: var(--font-secondary);
   letter-spacing: 1px;
-  box-shadow: none;
+  box-shadow: 0 4px 18px 0 rgba(0,0,0,0.10);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.main-buttons button .icon {
+  font-size: 1.8rem;
+  margin-bottom: 0.4rem;
+  color: var(--white);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.10));
 }
 
 .main-buttons button:hover {
-  background: var(--primary-color);
-  color: var(--white);
-  border: 2.5px solid var(--primary-color);
-  transform: translateY(-4px) scale(1.03);
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+  transform: translateY(-6px) scale(1.04);
+  box-shadow: 0 8px 24px 0 rgba(0,0,0,0.18);
 }
 
 .main-buttons button.alert {
-  border: 2.5px solid var(--accent-color);
-  color: var(--accent-color);
+  background: linear-gradient(135deg, var(--accent-color), #e74c3c);
+  color: var(--white);
 }
 
 .main-buttons button.alert:hover {
-  background: var(--accent-color);
+  background: linear-gradient(135deg, #e74c3c, var(--accent-color));
   color: var(--white);
-  border: 2.5px solid var(--accent-color);
 }
 
 .main-buttons button.secondary {
-  border: 2.5px solid var(--primary-dark);
-  color: var(--primary-dark);
+  background: linear-gradient(135deg, var(--primary-dark), #2c3e50);
+  color: var(--white);
 }
 
 .main-buttons button.secondary:hover {
-  background: var(--primary-dark);
+  background: linear-gradient(135deg, #2c3e50, var(--primary-dark));
   color: var(--white);
-  border: 2.5px solid var(--primary-dark);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 1000px) {
+  .main-buttons {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .main-buttons button {
+    width: 140px;
+    height: 100px;
+    font-size: 0.9rem;
+  }
+  .main-buttons button .icon {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 700px) {
   .main-buttons {
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.2rem;
     align-items: center;
   }
   .main-buttons button {
-    width: 100%;
-    min-width: unset;
+    width: 90vw;
     max-width: 350px;
+    height: 100px;
   }
 } 

@@ -13,7 +13,10 @@ import {
   faChevronLeft,
   faChevronRight,
   faChartLine,
-  faCog
+  faCog,
+  faClipboardList,
+  faPlus,
+  faShoppingBasket
 } from '@fortawesome/free-solid-svg-icons';
 import './navegacao.css';
 
@@ -27,29 +30,29 @@ export default function Navegacao() {
     { 
       path: '/vendas', 
       icon: faCashRegister, 
-      label: 'Vendas',
+      label: '(+)Vendas',
       description: 'Gerenciar vendas e transações',
       category: 'operacoes'
     },
     { 
       path: '/add-produto', 
-      icon: faBoxOpen, 
-      label: 'Registrar Compra',
+      icon: faShoppingBasket, 
+      label: '(+)Compras',
       description: 'Adicionar novos produtos ao estoque',
       category: 'operacoes'
     },
     { 
       path: '/compras', 
-      icon: faShoppingCart, 
-      label: 'Hist. Compras',
+      icon: faClipboardList, 
+      label: 'Pedidos',
       description: 'Visualizar histórico de compras',
       category: 'operacoes'
     },
     { 
-      path: '/historico-vendas', 
+      path: '/historicos', 
       icon: faHistory, 
-      label: 'Hist. Vendas',
-      description: 'Consultar vendas realizadas',
+      label: 'Históricos',
+      description: 'Consultar histórico de vendas e compras',
       category: 'operacoes'
     },
     { 

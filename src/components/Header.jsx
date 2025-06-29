@@ -44,6 +44,20 @@ export default function Header() {
     return pageMap[location.pathname] || null;
   };
 
+  // Função para obter o nome do usuário
+  const getUserName = () => {
+    if (!user) return 'Usuário';
+    
+    // Tenta diferentes propriedades possíveis
+    return user.nome || user.name || user.username || user.email || 'Usuário';
+  };
+
+  // Função para obter o email do usuário
+  const getUserEmail = () => {
+    if (!user) return '';
+    return user.email || '';
+  };
+
   return (
     <header className={`top-header ${navigationExpanded ? 'nav-expanded' : ''}`}>
       {/* Left Section - Brand */}
@@ -70,7 +84,7 @@ export default function Header() {
             title="Menu do Usuário"
           >
             <FontAwesomeIcon icon={faUser} />
-            <span className="user-name">{user?.name || 'Usuário'}</span>
+            <span className="user-name">{getUserName()}</span>
           </button>
           
           {showUserMenu && (
@@ -80,8 +94,8 @@ export default function Header() {
                   <FontAwesomeIcon icon={faUser} />
                 </div>
                 <div className="user-details">
-                  <span className="user-full-name">{user?.name || 'Usuário'}</span>
-                  <span className="user-role">Administrador</span>
+                  <span className="user-full-name">{getUserName()}</span>
+                  <span className="user-role">{getUserEmail() || 'Administrador'}</span>
                 </div>
               </div>
               <div className="dropdown-divider"></div>

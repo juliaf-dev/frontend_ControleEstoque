@@ -107,6 +107,10 @@
 .user-name {
   font-size: 0.9rem;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
 }
 
 .user-dropdown {
@@ -248,10 +252,6 @@
   
   .time-date {
     padding: 0.4rem 0.8rem;
-  }
-  
-  .user-name {
-    display: none;
   }
   
   .header-right {

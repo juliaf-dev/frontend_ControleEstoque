@@ -6,7 +6,7 @@ import Cadastro from './pages/Cadastro';
 import RecuperarSenha from './pages/RecuperarSenha';
 import Dashboard from './pages/Dashboard';
 import Fornecedores from './pages/Fornecedores';
-import HistoricoVendas from './pages/HistoricoVendas';
+import Historicos from './pages/Historicos';
 import Vendas from './pages/Vendas';
 import AddProduto from './pages/AddProduto';
 import Clients from './pages/Clients';
@@ -82,9 +82,9 @@ function AppRoutes() {
           <Fornecedores />
         </AuthenticatedLayout>
       } />
-      <Route path="/historico-vendas" element={
+      <Route path="/historicos" element={
         <AuthenticatedLayout>
-          <HistoricoVendas />
+          <Historicos />
         </AuthenticatedLayout>
       } />
       <Route path="/vendas" element={
