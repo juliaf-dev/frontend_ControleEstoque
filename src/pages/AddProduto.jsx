@@ -230,7 +230,7 @@ function AddProduto() {
           <div className="form-group">
             <label>Produto:</label>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <select value={produtoExistente} onChange={handleProdutoChange} required>
+              <select value={produtoExistente} onChange={handleProdutoChange} required={!novoProduto}>
                 <option value="">Selecione um produto</option>
                 {produtos.map(p => (
                   <option key={p.id} value={p.id}>{p.nome}</option>
@@ -256,7 +256,7 @@ function AddProduto() {
               <div className="form-group">
                 <label>Categoria:</label>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <select value={categoria} onChange={e => setCategoria(e.target.value)} required={novoProduto}>
+                  <select value={categoria} onChange={e => setCategoria(e.target.value)} required={novoProduto && categoria !== 'nova'}>
                     <option value="">Selecione uma categoria</option>
                     {categorias.map(cat => (
                       <option key={cat.id} value={cat.id}>{cat.nome || cat.name}</option>
@@ -312,7 +312,7 @@ function AddProduto() {
           <div className="form-group">
             <label>Fornecedor:</label>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <select value={fornecedor} onChange={handleFornecedorChange} required>
+              <select value={fornecedor} onChange={handleFornecedorChange} required={!novoFornecedor}>
                 <option value="">Selecione um fornecedor</option>
                 {fornecedores.map(f => (
                   <option key={f.id} value={f.id}>{f.nome}</option>
