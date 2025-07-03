@@ -129,31 +129,13 @@ export default function Fornecedores() {
                   ) : (
                     ativo ? 'Ativo' : 'Inativo'
                   )}</div>
-                  <div><b>Contato:</b> {editando === f.id ? (
-                    <>
-                      <input type="email" placeholder="E-mail" value={extra.email || ''} onChange={e => handleChangeExtra(f.id, 'email', e.target.value)} />
-                      <input type="text" placeholder="Telefone" value={extra.telefone || ''} onChange={e => handleChangeExtra(f.id, 'telefone', e.target.value)} />
-                    </>
-                  ) : (
-                    <>{extra.email || '---'} | {extra.telefone || '---'}</>
-                  )}</div>
-                  <div><b>Endereço:</b> {editando === f.id ? (
-                    <input type="text" placeholder="Endereço" value={extra.endereco || ''} onChange={e => handleChangeExtra(f.id, 'endereco', e.target.value)} />
-                  ) : (
-                    extra.endereco || '---'
-                  )}</div>
+                  <div><b>Email:</b> {f.email || '---'}</div>
+                  <div><b>Telefone:</b> {f.telefone || '---'}</div>
                   <div><b>Tempo de entrega:</b> {editando === f.id ? (
-                    <input type="text" placeholder="Tempo de entrega" value={extra.tempo_entrega || ''} onChange={e => handleChangeExtra(f.id, 'tempo_entrega', e.target.value)} />
+                    <input type="number" min="1" value={f.tempo_entrega || ''} onChange={e => setFornecedores(prev => prev.map(item => item.id === f.id ? { ...item, tempo_entrega: e.target.value } : item))} />
                   ) : (
-                    extra.tempo_entrega || '---'
+                    <>{f.tempo_entrega || '---'} dias</>
                   )}</div>
-                  <div><b>Produtos vinculados:</b>
-                    <ul className="fornecedor-produtos">
-                      {getProdutosVinculados(f.id).map(p => (
-                        <li key={p.id}>{p.nome}</li>
-                      ))}
-                    </ul>
-                  </div>
                   {editando === f.id && (
                     <button className="btn-salvar" onClick={() => handleSave(f.id)}><FontAwesomeIcon icon={faSave} /> Salvar</button>
                   )}

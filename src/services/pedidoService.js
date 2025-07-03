@@ -4,7 +4,7 @@ export const pedidoService = {
   // Listar pedidos
   async getPedidos() {
     try {
-      const response = await api.get('/pedidos');
+      const response = await api.get('/pedidos/listar');
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'Erro ao buscar pedidos' };
@@ -48,6 +48,26 @@ export const pedidoService = {
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'Erro ao deletar pedido' };
+    }
+  },
+
+  // Marcar pedido como recebido
+  async receberPedido(id) {
+    try {
+      const response = await api.put(`/pedidos/receber/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Erro ao marcar pedido como recebido' };
+    }
+  },
+
+  // Cancelar pedido
+  async cancelarPedido(id) {
+    try {
+      const response = await api.put(`/pedidos/cancelar/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Erro ao cancelar pedido' };
     }
   }
 }; 

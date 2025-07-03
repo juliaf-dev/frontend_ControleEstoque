@@ -1,7 +1,6 @@
 // Configuração de ambiente
 const config = {
-  // URL da API - sempre usa o backend no Render
-  API_URL: 'https://controle-estoque-1-a3g1.onrender.com'
+  API_URL: import.meta.env.VITE_API_URL || 'http://localhost:3000'
 };
 
 // Exportar configuração

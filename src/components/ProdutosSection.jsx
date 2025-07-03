@@ -20,6 +20,7 @@ export default function ProdutosSection() {
     nome: '',
     descricao: '',
     valor: '',
+    vendapreco: '',
     quantidade_estoque: '',
     categoria_id: ''
   });
@@ -77,6 +78,7 @@ export default function ProdutosSection() {
       nome: produto.nome,
       descricao: produto.descricao || '',
       valor: produto.valor,
+      vendapreco: produto.vendapreco || '',
       quantidade_estoque: produto.quantidade_estoque,
       categoria_id: produto.categoria?.id || ''
     });
@@ -88,6 +90,7 @@ export default function ProdutosSection() {
       nome: '',
       descricao: '',
       valor: '',
+      vendapreco: '',
       quantidade_estoque: '',
       categoria_id: ''
     });
@@ -184,7 +187,7 @@ export default function ProdutosSection() {
                 </div>
                 <div className="preco-info">
                   <FontAwesomeIcon icon={faMoneyBillWave} />
-                  R$ {parseFloat(produto.valor).toFixed(2)}
+                  R$ {parseFloat(produto.vendapreco || produto.valor).toFixed(2)}
                 </div>
               </div>
             </div>
@@ -257,7 +260,7 @@ export default function ProdutosSection() {
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <label>Valor:</label>
+                  <label>Valor de Compra:</label>
                   <input
                     type="number"
                     name="valor"
@@ -268,6 +271,20 @@ export default function ProdutosSection() {
                     required
                   />
                 </div>
+                <div className="form-group">
+                  <label>Valor de Venda:</label>
+                  <input
+                    type="number"
+                    name="vendapreco"
+                    value={editForm.vendapreco}
+                    onChange={handleInputChange}
+                    step="0.01"
+                    min="0"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="form-row">
                 <div className="form-group">
                   <label>Estoque:</label>
                   <input

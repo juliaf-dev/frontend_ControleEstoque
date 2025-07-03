@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Voltar from '../components/Voltar';
 import './Compra.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faChevronUp, faCalendarAlt, faBox, faTruck, faDollarSign, faBuilding, faPhone, faClock, faCheck, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronUp, faCalendarAlt, faBox, faTruck, faDollarSign, faBuilding, faPhone, faClock, faCheck, faExclamationTriangle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { pedidoService } from '../services/pedidoService';
 
 function Compra() {
   const [pedidos, setPedidos] = useState([]);
@@ -11,14 +12,21 @@ function Compra() {
   const [statusFiltro, setStatusFiltro] = useState('todos');
 
   useEffect(() => {
-    const pedidosSalvos = JSON.parse(localStorage.getItem('compras_pedidos') || '[]');
-    // Adicionar status padrão se não existir
-    const pedidosComStatus = pedidosSalvos.map(pedido => ({
-      ...pedido,
-      status: pedido.status || 'a-caminho',
-      dataRecebimento: pedido.dataRecebimento || calcularDataRecebimento(pedido.tempoEntrega)
-    }));
-    setPedidos(pedidosComStatus.reverse());
+    async function fetchPedidos() {
+      try {
+        const pedidosApi = await pedidoService.getPedidos();
+        // Adiciona dataRecebimento calculada se não existir
+        const pedidosComStatus = (pedidosApi || []).map(pedido => ({
+          ...pedido,
+          status: pedido.status || 'a-caminho',
+          dataRecebimento: pedido.dataRecebimento || calcularDataRecebimento(pedido.tempo_entrega || pedido.tempoEntrega)
+        }));
+        setPedidos(pedidosComStatus);
+      } catch {
+        setPedidos([]);
+      }
+    }
+    fetchPedidos();
   }, []);
 
   const calcularDataRecebimento = (tempoEntrega) => {
@@ -44,18 +52,45 @@ function Compra() {
     setExpandido(expandido === id ? null : id);
   };
 
-  const handleMarcarConcluido = (id) => {
-    const pedidosAtualizados = pedidos.map((pedido, idx) => 
-      idx === id ? { ...pedido, status: 'recebido' } : pedido
-    );
-    setPedidos(pedidosAtualizados);
-    
-    // Salvar no localStorage
-    const pedidosParaSalvar = JSON.parse(localStorage.getItem('compras_pedidos') || '[]');
-    const pedidoAtualizado = pedidosParaSalvar.find((_, idx) => idx === (pedidosParaSalvar.length - 1 - id));
-    if (pedidoAtualizado) {
-      pedidoAtualizado.status = 'recebido';
-      localStorage.setItem('compras_pedidos', JSON.stringify(pedidosParaSalvar));
+  const handleMarcarConcluido = async (id) => {
+    try {
+      const pedido = pedidos[id];
+      if (!pedido.id) {
+        alert('Este pedido não está registrado no banco de dados.');
+        return;
+      }
+      await pedidoService.receberPedido(pedido.id);
+      // Atualize a lista de pedidos do backend
+      const pedidosApi = await pedidoService.getPedidos();
+      const pedidosComStatus = (pedidosApi || []).map(pedido => ({
+        ...pedido,
+        status: pedido.status || 'a-caminho',
+        dataRecebimento: pedido.dataRecebimento || calcularDataRecebimento(pedido.tempo_entrega || pedido.tempoEntrega)
+      }));
+      setPedidos(pedidosComStatus);
+    } catch (error) {
+      alert(error.message || 'Erro ao marcar pedido como recebido');
+    }
+  };
+
+  const handleCancelar = async (id) => {
+    try {
+      const pedido = pedidos[id];
+      if (!pedido.id) {
+        alert('Este pedido não está registrado no banco de dados.');
+        return;
+      }
+      await pedidoService.cancelarPedido(pedido.id);
+      // Atualize a lista de pedidos do backend
+      const pedidosApi = await pedidoService.getPedidos();
+      const pedidosComStatus = (pedidosApi || []).map(pedido => ({
+        ...pedido,
+        status: pedido.status || 'a-caminho',
+        dataRecebimento: pedido.dataRecebimento || calcularDataRecebimento(pedido.tempo_entrega || pedido.tempoEntrega)
+      }));
+      setPedidos(pedidosComStatus);
+    } catch (error) {
+      alert(error.message || 'Erro ao cancelar pedido');
     }
   };
 
@@ -67,6 +102,8 @@ function Compra() {
         return <FontAwesomeIcon icon={faBox} />;
       case 'atrasado':
         return <FontAwesomeIcon icon={faExclamationTriangle} />;
+      case 'cancelada':
+        return <FontAwesomeIcon icon={faTimesCircle} />;
       default:
         return <FontAwesomeIcon icon={faTruck} />;
     }
@@ -80,6 +117,8 @@ function Compra() {
         return 'Recebido';
       case 'atrasado':
         return 'Atrasado';
+      case 'cancelada':
+        return 'Cancelada';
       default:
         return 'A Caminho';
     }
@@ -87,9 +126,9 @@ function Compra() {
 
   // Filtro
   const pedidosFiltrados = pedidos.filter(p => {
-    const produtoMatch = p.produto.toLowerCase().includes(busca.toLowerCase());
-    const fornecedorMatch = p.fornecedor.toLowerCase().includes(busca.toLowerCase());
-    const categoriaMatch = p.categoria.toLowerCase().includes(busca.toLowerCase());
+    const produtoMatch = (p.produto || p.nome || '').toLowerCase().includes(busca.toLowerCase());
+    const fornecedorMatch = (p.fornecedor || '').toLowerCase().includes(busca.toLowerCase());
+    const categoriaMatch = (p.categoria || '').toLowerCase().includes(busca.toLowerCase());
     const statusFinal = verificarStatusAtrasado(p.dataRecebimento, p.status);
     const statusMatch = statusFiltro === 'todos' || statusFinal === statusFiltro;
     return (produtoMatch || fornecedorMatch || categoriaMatch) && statusMatch;
@@ -111,6 +150,7 @@ function Compra() {
           <option value="a-caminho">A Caminho</option>
           <option value="atrasado">Atrasado</option>
           <option value="recebido">Recebido</option>
+          <option value="cancelada">Cancelada</option>
         </select>
       </div>
       {pedidosFiltrados.length === 0 ? (
@@ -133,11 +173,11 @@ function Compra() {
                   </div>
                   <div className="compra-header-principal">
                     <div className="compra-info-produto">
-                      <span className="compra-produto">{pedido.produto}</span>
+                      <span className="compra-produto">{pedido.produto || pedido.nome}</span>
                       <span className="compra-separador">-</span>
-                      <span className="compra-fornecedor">{pedido.fornecedor}</span>
+                      <span className="compra-fornecedor">{pedido.fornecedor || 'N/A'}</span>
                     </div>
-                    <span className="compra-valor">R$ {parseFloat(pedido.custoTotal).toFixed(2)}</span>
+                    <span className="compra-valor">R$ {parseFloat((pedido.valor || 0) * (pedido.quantidade || 1)).toFixed(2)}</span>
                     <span className="compra-expand-icon">
                       <FontAwesomeIcon icon={expandido === idx ? faChevronUp : faChevronDown} />
                     </span>
@@ -155,19 +195,23 @@ function Compra() {
                     </div>
                     <div>
                       <b><FontAwesomeIcon icon={faBox} /> Produto:</b>
-                      <span>{pedido.produto}</span>
+                      <span>{pedido.produto || pedido.nome}</span>
                     </div>
                     <div>
                       <b>Categoria:</b>
-                      <span>{pedido.categoria}</span>
+                      <span>{pedido.categoria || 'N/A'}</span>
                     </div>
                     <div>
                       <b><FontAwesomeIcon icon={faBuilding} /> Fornecedor:</b>
-                      <span>{pedido.fornecedor}</span>
+                      <span>{pedido.fornecedor || 'N/A'}</span>
                     </div>
                     <div>
                       <b><FontAwesomeIcon icon={faPhone} /> Contato:</b>
-                      <span>{pedido.contatoFornecedor}</span>
+                      <span>
+                        {pedido.emailFornecedor || ''}
+                        {pedido.emailFornecedor && pedido.telefoneFornecedor ? ' / ' : ''}
+                        {pedido.telefoneFornecedor || ''}
+                      </span>
                     </div>
                     <div>
                       <b>Quantidade:</b>
@@ -175,23 +219,17 @@ function Compra() {
                     </div>
                     <div>
                       <b>Preço Unitário:</b>
-                      <span className="valor-destaque">R$ {parseFloat(pedido.preco).toFixed(2)}</span>
+                      <span className="valor-destaque">R$ {parseFloat(pedido.valor || 0).toFixed(2)}</span>
                     </div>
-              {pedido.precoVenda && (
-                      <div>
-                        <b>Preço de Venda:</b>
-                        <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>R$ {parseFloat(pedido.precoVenda).toFixed(2)}</span>
-                      </div>
-              )}
                     <div>
                       <b><FontAwesomeIcon icon={faDollarSign} /> Custo Total:</b>
-                      <span className="valor-destaque">R$ {parseFloat(pedido.custoTotal).toFixed(2)}</span>
+                      <span className="valor-destaque">R$ {parseFloat((pedido.valor || 0) * (pedido.quantidade || 1)).toFixed(2)}</span>
                     </div>
                     <div>
                       <b><FontAwesomeIcon icon={faTruck} /> Tempo de Entrega:</b>
-                      <span><FontAwesomeIcon icon={faClock} /> {pedido.tempoEntrega} dias</span>
-            </div>
-                    {statusFinal !== 'recebido' && (
+                      <span><FontAwesomeIcon icon={faClock} /> {pedido.tempo_entrega || pedido.tempoEntrega || 'N/A'} dias</span>
+                    </div>
+                    {statusFinal !== 'recebido' && statusFinal !== 'cancelada' && (
                       <button 
                         className="btn-marcar-concluido"
                         onClick={(e) => {
@@ -202,7 +240,18 @@ function Compra() {
                         <FontAwesomeIcon icon={faCheck} /> Marcar como Recebido
                       </button>
                     )}
-        </div>
+                    {statusFinal !== 'recebido' && statusFinal !== 'cancelada' && (
+                      <button 
+                        className="btn-cancelar"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCancelar(idx);
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faTimesCircle} /> Cancelar Compra
+                      </button>
+                    )}
+                  </div>
                 )}
               </li>
             );

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { categoryService } from '../services/categoryService';
 import { fornecedorService } from '../services/fornecedorService';
 import { productService } from '../services/productService';
+import { pedidoService } from '../services/pedidoService';
 import './AddProduto.css';
 import Voltar from '../components/Voltar';
 import { useNavigate } from 'react-router-dom';
@@ -27,6 +28,12 @@ function AddProduto() {
   const [nomeFornecedor, setNomeFornecedor] = useState('');
   const [contatoFornecedor, setContatoFornecedor] = useState('');
   const [tempoEntregaFornecedor, setTempoEntregaFornecedor] = useState('');
+  const [emailFornecedor, setEmailFornecedor] = useState('');
+  const [telefoneFornecedor, setTelefoneFornecedor] = useState('');
+  const [addCategoria, setAddCategoria] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [descricaoCategoria, setDescricaoCategoria] = useState('');
+  const [mostrarCampoNovaCategoria, setMostrarCampoNovaCategoria] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,8 +55,8 @@ function AddProduto() {
     }
     async function fetchFornecedores() {
       try {
-        const response = await fornecedorService.getFornecedores();
-        setFornecedores(response.data || []);
+        const lista = await fornecedorService.getFornecedores();
+        setFornecedores(lista);
       } catch (error) {
         setFornecedores([]);
       }
@@ -98,6 +105,8 @@ function AddProduto() {
     if (value !== 'novo') {
       setNomeFornecedor('');
       setContatoFornecedor('');
+      setEmailFornecedor('');
+      setTelefoneFornecedor('');
       setTempoEntregaFornecedor('');
     }
   }
@@ -118,41 +127,94 @@ function AddProduto() {
     });
   }
 
-  function handleConfirmar() {
+  async function handleConfirmar() {
+    let fornecedorId = fornecedor;
+    if (novoFornecedor) {
+      try {
+        const fornecedorCadastrado = await fornecedorService.cadastrarFornecedor({
+          nome: nomeFornecedor,
+          situacao: 1,
+          email: emailFornecedor,
+          telefone: telefoneFornecedor,
+          tempo_entrega: parseInt(tempoEntregaFornecedor, 10)
+        });
+        fornecedorId = fornecedorCadastrado.id;
+        const lista = await fornecedorService.getFornecedores();
+        setFornecedores(lista);
+        setFornecedor(fornecedorId);
+      } catch (error) {
+        setErroFornecedor(error.message || 'Erro ao cadastrar fornecedor');
+        return;
+      }
+    }
+    // Se for um novo produto, criar primeiro
+    let novoProdutoId = null;
+    if (novoProduto) {
+      let categoriaId = categoria;
+      if (categoria === 'nova' && addCategoria.trim()) {
+        try {
+          const novaCat = await categoryService.createCategory({ nome: addCategoria, descricao: descricaoCategoria });
+          categoriaId = novaCat.id; // Usar o id retornado diretamente
+        } catch (error) {
+          setErro('Erro ao criar nova categoria');
+          return;
+        }
+      }
+      try {
+        const produtoData = {
+          nome: nome,
+          categoria_id: parseInt(categoriaId, 10),
+          quantidade_estoque: parseInt(quantidade, 10),
+          valor: parseFloat(preco),
+          vendapreco: parseFloat(precoVenda),
+          descricao: descricao
+        };
+        const produtoCriado = await productService.createProduct(produtoData);
+        novoProdutoId = produtoCriado?.data?.id || produtoCriado?.id;
+      } catch (error) {
+        setErro(error.message || 'Erro ao criar produto');
+        return;
+      }
+    }
+
     // Monta o objeto do pedido
     const pedido = {
-      produto: novoProduto ? nome : (produtos.find(p => String(p.id) === String(produtoExistente))?.nome || ''),
-      categoria: novoProduto ? (categorias.find(c => String(c.id) === String(categoria))?.nome || '') : (produtos.find(p => String(p.id) === String(produtoExistente))?.categoria_nome || ''),
-      preco: novoProduto ? preco : (produtos.find(p => String(p.id) === String(produtoExistente))?.valor || ''),
-      precoVenda: novoProduto ? precoVenda : (produtos.find(p => String(p.id) === String(produtoExistente))?.precoVenda || ''),
-      quantidade,
-      fornecedor: novoFornecedor ? nomeFornecedor : (fornecedores.find(f => String(f.id) === String(fornecedor))?.nome || ''),
-      contatoFornecedor: novoFornecedor ? contatoFornecedor : (fornecedores.find(f => String(f.id) === String(fornecedor))?.contato?.telefone || ''),
-      tempoEntrega: novoFornecedor ? tempoEntregaFornecedor : tempoEntrega,
-      custoTotal,
-      data: new Date().toLocaleString('pt-BR')
+      nome: novoProduto ? nome : (produtos.find(p => String(p.id) === String(produtoExistente))?.nome || ''),
+      valor: novoProduto ? preco : (produtos.find(p => String(p.id) === String(produtoExistente))?.valor || ''),
+      tipo: 'compra',
+      produto_id: novoProduto ? novoProdutoId : produtoExistente,
+      quantidade: parseInt(quantidade, 10),
+      fornecedor_id: fornecedorId,
+      tempo_entrega: parseInt(tempoEntregaFornecedor, 10)
     };
-    // Salva no localStorage
-    const pedidos = JSON.parse(localStorage.getItem('compras_pedidos') || '[]');
-    pedidos.push(pedido);
-    localStorage.setItem('compras_pedidos', JSON.stringify(pedidos));
-    alert('Compra registrada com sucesso!');
-    setProdutoExistente('');
-    setNovoProduto(false);
-    setNome('');
-    setCategoria('');
-    setPreco('');
-    setPrecoVenda('');
-    setQuantidade('');
-    setFornecedor('');
-    setTempoEntrega('');
-    setCustoTotal(0);
-    setResumo(null);
-    setNovoFornecedor(false);
-    setNomeFornecedor('');
-    setContatoFornecedor('');
-    setTempoEntregaFornecedor('');
-    navigate('/compras');
+    try {
+      await pedidoService.createPedido(pedido);
+      alert('Compra registrada com sucesso!');
+      setProdutoExistente('');
+      setNovoProduto(false);
+      setNome('');
+      setCategoria('');
+      setPreco('');
+      setPrecoVenda('');
+      setQuantidade('');
+      setFornecedor('');
+      setTempoEntrega('');
+      setCustoTotal(0);
+      setResumo(null);
+      setNovoFornecedor(false);
+      setNomeFornecedor('');
+      setContatoFornecedor('');
+      setTempoEntregaFornecedor('');
+      setEmailFornecedor('');
+      setTelefoneFornecedor('');
+      setAddCategoria('');
+      setDescricao('');
+      setDescricaoCategoria('');
+      setMostrarCampoNovaCategoria(false);
+      navigate('/compras');
+    } catch (error) {
+      setErro(error.message || 'Erro ao registrar compra');
+    }
   }
 
   return (
@@ -186,7 +248,24 @@ function AddProduto() {
                   {categorias.map(cat => (
                     <option key={cat.id} value={cat.id}>{cat.nome || cat.name}</option>
                   ))}
+                  <option value="nova">Adicionar nova categoria</option>
                 </select>
+              </div>
+              {categoria === 'nova' && (
+                <>
+                  <div className="form-group">
+                    <label>Nova Categoria:</label>
+                    <input type="text" value={addCategoria} onChange={e => setAddCategoria(e.target.value)} placeholder="Nome da nova categoria" required={categoria === 'nova'} />
+                  </div>
+                  <div className="form-group">
+                    <label>Descrição da Categoria:</label>
+                    <textarea value={descricaoCategoria} onChange={e => setDescricaoCategoria(e.target.value)} rows={2} placeholder="Descrição da nova categoria" />
+                  </div>
+                </>
+              )}
+              <div className="form-group">
+                <label>Descrição do Produto:</label>
+                <textarea value={descricao} onChange={e => setDescricao(e.target.value)} rows={3} placeholder="Descrição do novo produto" />
               </div>
               <div className="form-group">
                 <label>Preço unitário:</label>
@@ -225,12 +304,16 @@ function AddProduto() {
                 <input type="text" value={nomeFornecedor} onChange={e => setNomeFornecedor(e.target.value)} required={novoFornecedor} />
               </div>
               <div className="form-group">
-                <label>Contato (telefone ou e-mail):</label>
-                <input type="text" value={contatoFornecedor} onChange={e => setContatoFornecedor(e.target.value)} required={novoFornecedor} />
+                <label>Email do Fornecedor:</label>
+                <input type="email" value={emailFornecedor} onChange={e => setEmailFornecedor(e.target.value)} required={novoFornecedor} />
               </div>
               <div className="form-group">
-                <label>Tempo de entrega:</label>
-                <input type="text" value={tempoEntregaFornecedor} onChange={e => setTempoEntregaFornecedor(e.target.value)} required={novoFornecedor} />
+                <label>Telefone do Fornecedor:</label>
+                <input type="text" value={telefoneFornecedor} onChange={e => setTelefoneFornecedor(e.target.value)} required={novoFornecedor} />
+              </div>
+              <div className="form-group">
+                <label>Tempo de entrega (dias):</label>
+                <input type="number" min="1" value={tempoEntregaFornecedor} onChange={e => setTempoEntregaFornecedor(e.target.value)} required={novoFornecedor} />
               </div>
             </>
           )}

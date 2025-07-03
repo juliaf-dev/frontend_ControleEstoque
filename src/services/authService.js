@@ -6,7 +6,12 @@ export const authService = {
     try {
       const response = await api.post('/auth/login', { email, senha });
       if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
+        // Remove o prefixo 'Bearer ' se vier junto
+        let token = response.data.token;
+        if (token.startsWith('Bearer ')) {
+          token = token.replace('Bearer ', '');
+        }
+        localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
       }
       return response.data;

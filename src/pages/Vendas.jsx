@@ -103,10 +103,11 @@ export default function Vendas() {
         await pedidoService.createPedido({
           codigo: Date.now() + Math.floor(Math.random() * 1000),
           nome: item.produto.nome,
-          valor: item.produto.valor * item.quantidade,
+          valor: (item.produto.vendapreco || item.produto.valor) * item.quantidade,
           tipo: 'venda',
           produto_id: item.produto.id,
-          cliente_id: clienteId
+          cliente_id: clienteId,
+          quantidade: item.quantidade
         });
       }
       setMensagem('Venda registrada com sucesso!');
@@ -150,7 +151,7 @@ export default function Vendas() {
     }
   };
 
-  const total = carrinho.reduce((acc, item) => acc + (item.produto.valor * item.quantidade), 0);
+  const total = carrinho.reduce((acc, item) => acc + ((item.produto.vendapreco || item.produto.valor) * item.quantidade), 0);
 
   return (
     <div className="vendas-page">
@@ -223,8 +224,8 @@ export default function Vendas() {
                   <tr key={item.produto.id}>
                     <td className="produto-nome">{item.produto.nome}</td>
                     <td className="quantidade">{item.quantidade}</td>
-                    <td className="preco">R$ {Number(item.produto.valor).toFixed(2)}</td>
-                    <td className="subtotal">R$ {(item.produto.valor * item.quantidade).toFixed(2)}</td>
+                    <td className="preco">R$ {Number(item.produto.vendapreco || item.produto.valor).toFixed(2)}</td>
+                    <td className="subtotal">R$ {((item.produto.vendapreco || item.produto.valor) * item.quantidade).toFixed(2)}</td>
                     <td>
                       <button className="btn-remover" onClick={() => handleRemover(item.produto.id)} title="Remover">
                         <FontAwesomeIcon icon={faTrash} />

@@ -3,98 +3,7 @@ import Voltar from '../components/Voltar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHistory, faArrowUp, faArrowDown, faChartLine, faChevronDown, faChevronUp, faCalendarAlt, faBox, faDollarSign, faUser, faCode } from '@fortawesome/free-solid-svg-icons';
 import './Historicos.css';
-
-// Dados fake para teste
-const dadosFake = [
-  {
-    id: 1,
-    codigo: 'V001',
-    nome: 'Notebook Dell Inspiron',
-    valor: 3500.00,
-    tipo: 'venda',
-    createdAt: '2024-01-15T10:30:00Z',
-    cliente_id: 1,
-    cliente: 'João Silva',
-    quantidade: 1
-  },
-  {
-    id: 2,
-    codigo: 'C001',
-    nome: 'Mouse Gamer RGB',
-    valor: 150.00,
-    tipo: 'compra',
-    createdAt: '2024-01-14T14:20:00Z',
-    fornecedor_id: 1,
-    fornecedor: 'TechStore Ltda',
-    quantidade: 5
-  },
-  {
-    id: 3,
-    codigo: 'V002',
-    nome: 'Teclado Mecânico',
-    valor: 280.00,
-    tipo: 'venda',
-    createdAt: '2024-01-13T16:45:00Z',
-    cliente_id: 2,
-    cliente: 'Maria Santos',
-    quantidade: 1
-  },
-  {
-    id: 4,
-    codigo: 'C002',
-    nome: 'Monitor 24" Full HD',
-    valor: 800.00,
-    tipo: 'compra',
-    createdAt: '2024-01-12T09:15:00Z',
-    fornecedor_id: 2,
-    fornecedor: 'MonitorTech',
-    quantidade: 2
-  },
-  {
-    id: 5,
-    codigo: 'V003',
-    nome: 'Headset Gamer',
-    valor: 220.00,
-    tipo: 'venda',
-    createdAt: '2024-01-11T11:30:00Z',
-    cliente_id: 3,
-    cliente: 'Pedro Costa',
-    quantidade: 1
-  },
-  {
-    id: 6,
-    codigo: 'V004',
-    nome: 'SSD 500GB',
-    valor: 350.00,
-    tipo: 'venda',
-    createdAt: '2024-01-10T13:20:00Z',
-    cliente_id: 1,
-    cliente: 'João Silva',
-    quantidade: 2
-  },
-  {
-    id: 7,
-    codigo: 'C003',
-    nome: 'Placa de Vídeo RTX 3060',
-    valor: 2500.00,
-    tipo: 'compra',
-    createdAt: '2024-01-09T15:40:00Z',
-    fornecedor_id: 3,
-    fornecedor: 'GamingParts',
-    quantidade: 1
-  },
-  {
-    id: 8,
-    codigo: 'V005',
-    nome: 'Webcam HD',
-    valor: 180.00,
-    tipo: 'venda',
-    createdAt: '2024-01-08T10:10:00Z',
-    cliente_id: 2,
-    cliente: 'Maria Santos',
-    quantidade: 1
-  }
-];
+import { pedidoService } from '../services/pedidoService';
 
 export default function Historicos() {
   const [historico, setHistorico] = useState([]);
@@ -116,27 +25,20 @@ export default function Historicos() {
   const carregarHistorico = async () => {
     try {
       setLoading(true);
-      
-      // Simular delay de carregamento
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Usar dados fake em vez de chamar a API
-      const pedidos = dadosFake;
-      
+      const pedidos = await pedidoService.getPedidos();
+      // Ordenar do mais recente para o mais antigo
+      pedidos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       // Processar dados para calcular resumo
       const vendas = pedidos.filter(p => p.tipo === 'venda');
       const compras = pedidos.filter(p => p.tipo === 'compra');
-      
       const totalVendas = vendas.reduce((acc, venda) => acc + Number(venda.valor), 0);
       const totalCompras = compras.reduce((acc, compra) => acc + Number(compra.valor), 0);
       const lucro = totalVendas - totalCompras;
-
       setResumo({
         totalVendas,
         totalCompras,
         lucro
       });
-
       setHistorico(pedidos);
     } catch (error) {
       setErro('Erro ao carregar histórico');
