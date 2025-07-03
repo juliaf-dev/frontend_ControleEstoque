@@ -4,9 +4,11 @@ import './Compra.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp, faCalendarAlt, faBox, faTruck, faDollarSign, faBuilding, faPhone, faClock, faCheck, faExclamationTriangle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { pedidoService } from '../services/pedidoService';
+import { fornecedorService } from '../services/fornecedorService';
 
 function Compra() {
   const [pedidos, setPedidos] = useState([]);
+  const [fornecedores, setFornecedores] = useState([]);
   const [expandido, setExpandido] = useState(null);
   const [busca, setBusca] = useState('');
   const [statusFiltro, setStatusFiltro] = useState('todos');
@@ -15,7 +17,6 @@ function Compra() {
     async function fetchPedidos() {
       try {
         const pedidosApi = await pedidoService.getPedidos();
-        // Adiciona dataRecebimento calculada se não existir
         const pedidosComStatus = (pedidosApi || []).map(pedido => ({
           ...pedido,
           status: pedido.status || 'a-caminho',
@@ -26,7 +27,16 @@ function Compra() {
         setPedidos([]);
       }
     }
+    async function fetchFornecedores() {
+      try {
+        const lista = await fornecedorService.getFornecedores();
+        setFornecedores(lista);
+      } catch {
+        setFornecedores([]);
+      }
+    }
     fetchPedidos();
+    fetchFornecedores();
   }, []);
 
   const calcularDataRecebimento = (tempoEntrega) => {
@@ -38,10 +48,8 @@ function Compra() {
 
   const verificarStatusAtrasado = (dataRecebimento, status) => {
     if (status === 'recebido') return status;
-    
     const dataRecebimentoObj = new Date(dataRecebimento.split('/').reverse().join('-'));
     const hoje = new Date();
-    
     if (dataRecebimentoObj < hoje) {
       return 'atrasado';
     }
@@ -60,7 +68,6 @@ function Compra() {
         return;
       }
       await pedidoService.receberPedido(pedido.id);
-      // Atualize a lista de pedidos do backend
       const pedidosApi = await pedidoService.getPedidos();
       const pedidosComStatus = (pedidosApi || []).map(pedido => ({
         ...pedido,
@@ -81,7 +88,6 @@ function Compra() {
         return;
       }
       await pedidoService.cancelarPedido(pedido.id);
-      // Atualize a lista de pedidos do backend
       const pedidosApi = await pedidoService.getPedidos();
       const pedidosComStatus = (pedidosApi || []).map(pedido => ({
         ...pedido,
@@ -127,7 +133,10 @@ function Compra() {
   // Filtro
   const pedidosFiltrados = pedidos.filter(p => {
     const produtoMatch = (p.produto || p.nome || '').toLowerCase().includes(busca.toLowerCase());
-    const fornecedorMatch = (p.fornecedor || '').toLowerCase().includes(busca.toLowerCase());
+    // Busca fornecedor pelo nome, usando a lista de fornecedores
+    const fornecedorObj = fornecedores.find(f => f.id === p.fornecedor_id || f.id === p.fornecedorId || f.id === p.fornecedor);
+    const nomeFornecedor = fornecedorObj ? fornecedorObj.nome : (p.fornecedor || 'N/A');
+    const fornecedorMatch = nomeFornecedor.toLowerCase().includes(busca.toLowerCase());
     const categoriaMatch = (p.categoria || '').toLowerCase().includes(busca.toLowerCase());
     const statusFinal = verificarStatusAtrasado(p.dataRecebimento, p.status);
     const statusMatch = statusFiltro === 'todos' || statusFinal === statusFiltro;
@@ -159,7 +168,9 @@ function Compra() {
         <ul className="compras-lista">
           {pedidosFiltrados.map((pedido, idx) => {
             const statusFinal = verificarStatusAtrasado(pedido.dataRecebimento, pedido.status);
-            
+            // Busca fornecedor pelo id
+            const fornecedorObj = fornecedores.find(f => f.id === pedido.fornecedor_id || f.id === pedido.fornecedorId || f.id === pedido.fornecedor);
+            const nomeFornecedor = fornecedorObj ? fornecedorObj.nome : (pedido.fornecedor || 'N/A');
             return (
               <li key={idx} className={`compra-item ${expandido === idx ? 'expandido' : ''}`}>
                 <div className="compra-cabecalho" onClick={() => handleExpandir(idx)}>
@@ -175,7 +186,7 @@ function Compra() {
                     <div className="compra-info-produto">
                       <span className="compra-produto">{pedido.produto || pedido.nome}</span>
                       <span className="compra-separador">-</span>
-                      <span className="compra-fornecedor">{pedido.fornecedor || 'N/A'}</span>
+                      <span className="compra-fornecedor">{nomeFornecedor}</span>
                     </div>
                     <span className="compra-valor">R$ {parseFloat((pedido.valor || 0) * (pedido.quantidade || 1)).toFixed(2)}</span>
                     <span className="compra-expand-icon">
@@ -203,7 +214,7 @@ function Compra() {
                     </div>
                     <div>
                       <b><FontAwesomeIcon icon={faBuilding} /> Fornecedor:</b>
-                      <span>{pedido.fornecedor || 'N/A'}</span>
+                      <span>{nomeFornecedor}</span>
                     </div>
                     <div>
                       <b><FontAwesomeIcon icon={faPhone} /> Contato:</b>

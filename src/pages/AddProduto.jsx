@@ -36,6 +36,7 @@ function AddProduto() {
   const [descricao, setDescricao] = useState('');
   const [descricaoCategoria, setDescricaoCategoria] = useState('');
   const [mostrarCampoNovaCategoria, setMostrarCampoNovaCategoria] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -118,7 +119,8 @@ function AddProduto() {
     setErro('');
     setResumo({
       produto: novoProduto ? nome : (produtos.find(p => String(p.id) === String(produtoExistente))?.nome || ''),
-      categoria: novoProduto ? (categorias.find(c => String(c.id) === String(categoria))?.nome || '') : (produtos.find(p => String(p.id) === String(produtoExistente))?.categoria_nome || ''),
+      categoria: mostrarCampoNovaCategoria ? addCategoria : (novoProduto ? (categorias.find(c => String(c.id) === String(categoria))?.nome || '') : (produtos.find(p => String(p.id) === String(produtoExistente))?.categoria_nome || '')),
+      categoriaDescricao: mostrarCampoNovaCategoria ? descricaoCategoria : '',
       preco: novoProduto ? preco : (produtos.find(p => String(p.id) === String(produtoExistente))?.valor || ''),
       precoVenda: novoProduto ? precoVenda : (produtos.find(p => String(p.id) === String(produtoExistente))?.precoVenda || ''),
       quantidade,
@@ -130,6 +132,13 @@ function AddProduto() {
   }
 
   async function handleConfirmar() {
+    if (isProcessing) return;
+    if (mostrarCampoNovaCategoria && addCategoria.trim()) {
+      setErro('Salve a nova categoria antes de confirmar a compra.');
+      setIsProcessing(false);
+      return;
+    }
+    setIsProcessing(true);
     let fornecedorId = fornecedor;
     if (novoFornecedor) {
       try {
@@ -146,27 +155,52 @@ function AddProduto() {
         setFornecedor(fornecedorId);
       } catch (error) {
         setErroFornecedor(error.message || 'Erro ao cadastrar fornecedor');
+        setIsProcessing(false);
         return;
       }
     }
-    // Se for um novo produto, criar primeiro
-    let novoProdutoId = null;
-    if (novoProduto) {
       let categoriaId = categoria;
-      if (categoria === 'nova' && addCategoria.trim()) {
+    if (mostrarCampoNovaCategoria && addCategoria.trim()) {
         try {
           const novaCat = await categoryService.createCategory({ nome: addCategoria, descricao: descricaoCategoria });
-          categoriaId = novaCat.id; // Usar o id retornado diretamente
+        categoriaId = novaCat.id;
+        setCategoria(categoriaId);
+        const response = await categoryService.getCategories();
+        setCategorias(response.data || []);
+        setMostrarCampoNovaCategoria(false);
         } catch (error) {
+        if (error.response && error.response.status === 409) {
+          const response = await categoryService.getCategories();
+          const existente = (response.data || []).find(cat => cat.nome === addCategoria);
+          if (existente) {
+            categoriaId = existente.id;
+            setCategoria(categoriaId);
+            setMostrarCampoNovaCategoria(false);
+          } else {
+            setErro('Já existe uma categoria com esse nome, mas não foi possível selecioná-la automaticamente. Selecione manualmente.');
+            setIsProcessing(false);
+            return;
+          }
+        } else {
           setErro('Erro ao criar nova categoria');
+          setIsProcessing(false);
           return;
         }
       }
+    }
+    if (novoProduto && (!categoriaId || isNaN(Number(categoriaId)))) {
+      console.log('categoriaId', categoriaId, 'addCategoria', addCategoria);
+      setErro('Selecione ou crie uma categoria válida antes de criar o produto.');
+      setIsProcessing(false);
+      return;
+    }
+    let novoProdutoId = null;
+    if (novoProduto) {
       try {
         const produtoData = {
           nome: nome,
           categoria_id: parseInt(categoriaId, 10),
-          quantidade_estoque: parseInt(quantidade, 10),
+          quantidade_estoque: 0,
           valor: parseFloat(preco),
           vendapreco: parseFloat(precoVenda),
           descricao: descricao
@@ -175,11 +209,10 @@ function AddProduto() {
         novoProdutoId = produtoCriado?.data?.id || produtoCriado?.id;
       } catch (error) {
         setErro(error.message || 'Erro ao criar produto');
+        setIsProcessing(false);
         return;
       }
     }
-
-    // Monta o objeto do pedido
     const pedido = {
       nome: novoProduto ? nome : (produtos.find(p => String(p.id) === String(produtoExistente))?.nome || ''),
       valor: novoProduto ? preco : (produtos.find(p => String(p.id) === String(produtoExistente))?.valor || ''),
@@ -217,6 +250,42 @@ function AddProduto() {
     } catch (error) {
       setErro(error.message || 'Erro ao registrar compra');
     }
+    setIsProcessing(false);
+  }
+
+  async function handleSalvarCategoria(e) {
+    e.preventDefault();
+    if (!addCategoria.trim()) {
+      setErro('Informe o nome da nova categoria.');
+      return;
+    }
+    setIsProcessing(true);
+    let categoriaId = categoria;
+    try {
+      const novaCat = await categoryService.createCategory({ nome: addCategoria, descricao: descricaoCategoria });
+      categoriaId = novaCat.id;
+      setCategoria(categoriaId);
+      const response = await categoryService.getCategories();
+      setCategorias(response.data || []);
+      setMostrarCampoNovaCategoria(false);
+      setErro('');
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        const response = await categoryService.getCategories();
+        const existente = (response.data || []).find(cat => cat.nome === addCategoria);
+        if (existente) {
+          categoriaId = existente.id;
+          setCategoria(categoriaId);
+          setMostrarCampoNovaCategoria(false);
+          setErro('');
+        } else {
+          setErro('Já existe uma categoria com esse nome, mas não foi possível selecioná-la automaticamente. Selecione manualmente.');
+        }
+      } else {
+        setErro('Erro ao criar nova categoria');
+      }
+    }
+    setIsProcessing(false);
   }
 
   return (
@@ -256,16 +325,24 @@ function AddProduto() {
               <div className="form-group">
                 <label>Categoria:</label>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <select value={categoria} onChange={e => setCategoria(e.target.value)} required={novoProduto && categoria !== 'nova'}>
+                  <select value={categoria} onChange={e => {
+                    setCategoria(e.target.value);
+                    if (e.target.value === 'nova') setMostrarCampoNovaCategoria(true);
+                    else setMostrarCampoNovaCategoria(false);
+                  }} required={novoProduto && categoria !== 'nova'}>
                     <option value="">Selecione uma categoria</option>
                     {categorias.map(cat => (
                       <option key={cat.id} value={cat.id}>{cat.nome || cat.name}</option>
                     ))}
+                    <option value="nova">+ Nova Categoria</option>
                   </select>
                   <button
                     type="button"
                     className="btn-add-icone-venda"
-                    onClick={() => setMostrarCampoNovaCategoria(true)}
+                    onClick={() => {
+                      setMostrarCampoNovaCategoria(true);
+                      setCategoria('nova');
+                    }}
                     title="Adicionar nova categoria"
                     aria-label="Adicionar nova categoria"
                   >
@@ -273,16 +350,17 @@ function AddProduto() {
                   </button>
                 </div>
               </div>
-              {categoria === 'nova' && (
+              {mostrarCampoNovaCategoria && (
                 <>
                   <div className="form-group">
                     <label>Nova Categoria:</label>
-                    <input type="text" value={addCategoria} onChange={e => setAddCategoria(e.target.value)} placeholder="Nome da nova categoria" required={categoria === 'nova'} />
+                    <input type="text" value={addCategoria} onChange={e => setAddCategoria(e.target.value)} placeholder="Nome da nova categoria" required={mostrarCampoNovaCategoria} />
                   </div>
                   <div className="form-group">
                     <label>Descrição da Categoria:</label>
                     <textarea value={descricaoCategoria} onChange={e => setDescricaoCategoria(e.target.value)} rows={2} placeholder="Descrição da nova categoria" />
                   </div>
+                  <button type="button" className="btn-adicionar" onClick={handleSalvarCategoria} disabled={isProcessing} style={{marginBottom: 12}}>Salvar Categoria</button>
                 </>
               )}
               <div className="form-group">
@@ -359,14 +437,19 @@ function AddProduto() {
             <label>Custo total:</label>
             <input type="text" value={custoTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} readOnly />
           </div>
-          <button type="submit" className="btn-adicionar">Ver Resumo</button>
+          <button type="submit" className="btn-adicionar" disabled={isProcessing}>Ver Resumo</button>
         </form>
       ) : (
         <div className="resumo-compra">
           <h2>Resumo da Compra</h2>
           <ul>
             <li><b>Produto:</b> {resumo.produto}</li>
+            {resumo.categoria && (
             <li><b>Categoria:</b> {resumo.categoria}</li>
+            )}
+            {resumo.categoriaDescricao && (
+              <li><b>Descrição da Categoria:</b> {resumo.categoriaDescricao}</li>
+            )}
             <li><b>Preço unitário:</b> {parseFloat(resumo.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</li>
             <li><b>Valor de venda:</b> {parseFloat(resumo.precoVenda).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</li>
             <li><b>Quantidade:</b> {resumo.quantidade}</li>
@@ -374,7 +457,7 @@ function AddProduto() {
             <li><b>Tempo de entrega:</b> {resumo.tempoEntrega}</li>
             <li><b>Custo total:</b> {custoTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</li>
           </ul>
-          <button className="btn-adicionar" onClick={handleConfirmar}>Confirmar Compra</button>
+          <button className="btn-adicionar" onClick={handleConfirmar} disabled={isProcessing}>Confirmar Compra</button>
           <button className="btn-adicionar" style={{ background: '#aaa', marginTop: 8 }} onClick={() => setResumo(null)}>Voltar</button>
         </div>
       )}
