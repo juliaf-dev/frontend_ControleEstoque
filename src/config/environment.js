@@ -1,12 +1,5 @@
 // Configuração de ambiente
-const config = {
-  // URL da API - agora usa o backend local
-  API_URL: 'http://localhost:3000'
-};
 
-// Exportar configuração
-export const getConfig = () => {
-  return config;
-};
+const API_URL = import.meta.env.VITE_API_URL || "https://controle-estoque-1-a3g1.onrender.com";
 
-export default config; 
+export default API_URL; 
