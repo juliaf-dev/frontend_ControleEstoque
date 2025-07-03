@@ -95,7 +95,7 @@ export default function Header() {
                 </div>
                 <div className="user-details">
                   <span className="user-full-name">{getUserName()}</span>
-                  <span className="user-role">{getUserEmail() || 'Administrador'}</span>
+                  <span className="user-role">{getUserName()}</span>
                 </div>
               </div>
               <div className="dropdown-divider"></div>

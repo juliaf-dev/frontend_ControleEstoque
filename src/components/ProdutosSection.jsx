@@ -203,19 +203,6 @@ export default function ProdutosSection() {
                     <FontAwesomeIcon icon={faEdit} />
                   </button>
                 </div>
-                <p><strong>Fornecedores:</strong></p>
-                  {fornecedoresPorProduto[produto.id] && fornecedoresPorProduto[produto.id].length > 0 ? (
-                  <ul className="fornecedores-lista">
-                      {fornecedoresPorProduto[produto.id].map(f => (
-                      <li key={f.id}>
-                        <FontAwesomeIcon icon={faIndustry} style={{marginRight: 6}}/>
-                        {f.nome}
-                      </li>
-                      ))}
-                    </ul>
-                  ) : (
-                  <p style={{color: 'var(--dark-gray)', fontStyle: 'italic'}}>Sem fornecedores cadastrados</p>
-                  )}
               </div>
             )}
           </div>

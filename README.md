@@ -14,23 +14,23 @@ Frontend do sistema de controle de estoque "So Bugiganga" desenvolvido em React.
 ## Instalação e Execução
 
 1. **Instale as dependências:**
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
 2. **Configuração da API:**
    - O backend deve estar rodando em `http://localhost:3000` para desenvolvimento local.
    - Para produção, a URL da API está configurada em `src/config/environment.js`.
 3. **Execute o projeto:**
-   ```bash
-   # Desenvolvimento
-   npm run dev
+```bash
+# Desenvolvimento
+npm run dev
 
-   # Build para produção
-   npm run build
+# Build para produção
+npm run build
 
-   # Preview da build
-   npm run preview
-   ```
+# Preview da build
+npm run preview
+```
 
 ## Estrutura do Projeto
 

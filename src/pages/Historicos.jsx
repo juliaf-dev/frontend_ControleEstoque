@@ -32,7 +32,7 @@ export default function Historicos() {
       const vendas = pedidos.filter(p => p.tipo === 'venda');
       const compras = pedidos.filter(p => p.tipo === 'compra');
       const totalVendas = vendas.reduce((acc, venda) => acc + Number(venda.valor), 0);
-      const totalCompras = compras.reduce((acc, compra) => acc + Number(compra.valor), 0);
+      const totalCompras = compras.reduce((acc, compra) => acc + (Number(compra.valor) * (Number(compra.quantidade) || 1)), 0);
       const lucro = totalVendas - totalCompras;
       setResumo({
         totalVendas,
@@ -87,6 +87,19 @@ export default function Historicos() {
       style: 'currency',
       currency: 'BRL'
     }).format(valor);
+  };
+
+  // Função auxiliar para obter o nome do cliente
+  const getNomeCliente = (movimento) => {
+    return movimento.cliente || movimento.cliente_nome || movimento.nome_cliente || '';
+  };
+
+  // Função auxiliar para obter o valor total correto
+  const getValorTotal = (movimento) => {
+    if (movimento.tipo === 'compra') {
+      return (movimento.valor || 0) * (movimento.quantidade || 1);
+    }
+    return movimento.valor || 0;
   };
 
   const historicoFiltrado = filtrarHistorico();
@@ -188,11 +201,11 @@ export default function Historicos() {
                       <span className="movimento-produto">{movimento.nome}</span>
                       <span className="movimento-separador">-</span>
                       <span className="movimento-pessoa">
-                        {movimento.tipo === 'venda' ? movimento.cliente : movimento.fornecedor}
+                        {movimento.tipo === 'venda' ? '' : movimento.fornecedor}
                       </span>
                     </div>
                     <span className={`movimento-valor ${movimento.tipo === 'venda' ? 'valor-positivo' : 'valor-negativo'}`}>
-                      {movimento.tipo === 'venda' ? '+' : '-'} {formatarValor(movimento.valor)}
+                      {movimento.tipo === 'venda' ? '+' : '-'} {formatarValor(getValorTotal(movimento))}
                     </span>
                     <span className="movimento-expand-icon">
                       <FontAwesomeIcon icon={expandido === movimento.id ? faChevronUp : faChevronDown} />
@@ -206,10 +219,6 @@ export default function Historicos() {
                       <span>{formatarData(movimento.createdAt)}</span>
                     </div>
                     <div>
-                      <b><FontAwesomeIcon icon={faCode} /> Código:</b>
-                      <span>{movimento.codigo}</span>
-                    </div>
-                    <div>
                       <b><FontAwesomeIcon icon={faBox} /> Produto:</b>
                       <span>{movimento.nome}</span>
                     </div>
@@ -218,13 +227,9 @@ export default function Historicos() {
                       <span>{movimento.quantidade} unidades</span>
                     </div>
                     <div>
-                      <b><FontAwesomeIcon icon={faUser} /> {movimento.tipo === 'venda' ? 'Cliente:' : 'Fornecedor:'}</b>
-                      <span>{movimento.tipo === 'venda' ? movimento.cliente : movimento.fornecedor}</span>
-                    </div>
-                    <div>
                       <b><FontAwesomeIcon icon={faDollarSign} /> Valor Total:</b>
                       <span className={`valor-destaque ${movimento.tipo === 'venda' ? 'valor-positivo' : 'valor-negativo'}`}>
-                        {formatarValor(movimento.valor)}
+                        {formatarValor(getValorTotal(movimento))}
                       </span>
                     </div>
                   </div>

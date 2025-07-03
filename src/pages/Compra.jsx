@@ -22,7 +22,22 @@ function Compra() {
           status: pedido.status || 'a-caminho',
           dataRecebimento: pedido.dataRecebimento || calcularDataRecebimento(pedido.tempo_entrega || pedido.tempoEntrega)
         }));
-        setPedidos(pedidosComStatus);
+
+        // Adiciona o pedido fake atrasado
+        const pedidoFake = {
+          id: 'fake-1',
+          nome: 'Pedido Fake Atrasado',
+          produto: 'Canetas',
+          categoria: 'papelaria',
+          fornecedor: 'papel landia',
+          quantidade: 1,
+          valor: 0.70,
+          status: 'atrasado',
+          dataRecebimento: '01/01/2025', // Data antiga para garantir atraso
+          tempo_entrega: 5,
+        };
+
+        setPedidos([...pedidosComStatus, pedidoFake]);
       } catch {
         setPedidos([]);
       }

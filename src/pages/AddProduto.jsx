@@ -159,16 +159,16 @@ function AddProduto() {
         return;
       }
     }
-      let categoriaId = categoria;
+    let categoriaId = categoria;
     if (mostrarCampoNovaCategoria && addCategoria.trim()) {
-        try {
-          const novaCat = await categoryService.createCategory({ nome: addCategoria, descricao: descricaoCategoria });
+      try {
+        const novaCat = await categoryService.createCategory({ nome: addCategoria, descricao: descricaoCategoria });
         categoriaId = novaCat.id;
         setCategoria(categoriaId);
         const response = await categoryService.getCategories();
         setCategorias(response.data || []);
         setMostrarCampoNovaCategoria(false);
-        } catch (error) {
+      } catch (error) {
         if (error.response && error.response.status === 409) {
           const response = await categoryService.getCategories();
           const existente = (response.data || []).find(cat => cat.nome === addCategoria);
@@ -189,38 +189,25 @@ function AddProduto() {
       }
     }
     if (novoProduto && (!categoriaId || isNaN(Number(categoriaId)))) {
-      console.log('categoriaId', categoriaId, 'addCategoria', addCategoria);
       setErro('Selecione ou crie uma categoria válida antes de criar o produto.');
       setIsProcessing(false);
       return;
-    }
-    let novoProdutoId = null;
-    if (novoProduto) {
-      try {
-        const produtoData = {
-          nome: nome,
-          categoria_id: parseInt(categoriaId, 10),
-          quantidade_estoque: 0,
-          valor: parseFloat(preco),
-          vendapreco: parseFloat(precoVenda),
-          descricao: descricao
-        };
-        const produtoCriado = await productService.createProduct(produtoData);
-        novoProdutoId = produtoCriado?.data?.id || produtoCriado?.id;
-      } catch (error) {
-        setErro(error.message || 'Erro ao criar produto');
-        setIsProcessing(false);
-        return;
-      }
     }
     const pedido = {
       nome: novoProduto ? nome : (produtos.find(p => String(p.id) === String(produtoExistente))?.nome || ''),
       valor: novoProduto ? preco : (produtos.find(p => String(p.id) === String(produtoExistente))?.valor || ''),
       tipo: 'compra',
-      produto_id: novoProduto ? novoProdutoId : produtoExistente,
+      produto_id: novoProduto ? null : produtoExistente,
       quantidade: parseInt(quantidade, 10),
       fornecedor_id: fornecedorId,
-      tempo_entrega: parseInt(tempoEntregaFornecedor, 10)
+      tempo_entrega: parseInt(tempoEntregaFornecedor, 10),
+      novo_produto: novoProduto ? {
+        nome,
+        categoria_id: parseInt(categoriaId, 10),
+        valor: parseFloat(preco),
+        vendapreco: parseFloat(precoVenda),
+        descricao
+      } : undefined
     };
     try {
       await pedidoService.createPedido(pedido);
