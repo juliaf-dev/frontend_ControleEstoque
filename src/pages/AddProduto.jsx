@@ -6,6 +6,8 @@ import { pedidoService } from '../services/pedidoService';
 import './AddProduto.css';
 import Voltar from '../components/Voltar';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserPlus, faFileCirclePlus, faCalendarPlus } from '@fortawesome/free-solid-svg-icons';
 
 function AddProduto() {
   const [produtos, setProdutos] = useState([]);
@@ -227,13 +229,23 @@ function AddProduto() {
         <form className="add-produto-form" onSubmit={handleResumo}>
           <div className="form-group">
             <label>Produto:</label>
-            <select value={produtoExistente} onChange={handleProdutoChange} required>
-              <option value="">Selecione um produto</option>
-              {produtos.map(p => (
-                <option key={p.id} value={p.id}>{p.nome}</option>
-              ))}
-              <option value="novo">Cadastrar novo produto</option>
-            </select>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <select value={produtoExistente} onChange={handleProdutoChange} required>
+                <option value="">Selecione um produto</option>
+                {produtos.map(p => (
+                  <option key={p.id} value={p.id}>{p.nome}</option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className="btn-add-icone-venda"
+                onClick={() => setNovoProduto(true)}
+                title="Adicionar novo produto"
+                aria-label="Adicionar novo produto"
+              >
+                <FontAwesomeIcon icon={faFileCirclePlus} />
+              </button>
+            </div>
           </div>
           {novoProduto && (
             <>
@@ -243,13 +255,23 @@ function AddProduto() {
               </div>
               <div className="form-group">
                 <label>Categoria:</label>
-                <select value={categoria} onChange={e => setCategoria(e.target.value)} required={novoProduto}>
-                  <option value="">Selecione uma categoria</option>
-                  {categorias.map(cat => (
-                    <option key={cat.id} value={cat.id}>{cat.nome || cat.name}</option>
-                  ))}
-                  <option value="nova">Adicionar nova categoria</option>
-                </select>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <select value={categoria} onChange={e => setCategoria(e.target.value)} required={novoProduto}>
+                    <option value="">Selecione uma categoria</option>
+                    {categorias.map(cat => (
+                      <option key={cat.id} value={cat.id}>{cat.nome || cat.name}</option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    className="btn-add-icone-venda"
+                    onClick={() => setMostrarCampoNovaCategoria(true)}
+                    title="Adicionar nova categoria"
+                    aria-label="Adicionar nova categoria"
+                  >
+                    <FontAwesomeIcon icon={faCalendarPlus} />
+                  </button>
+                </div>
               </div>
               {categoria === 'nova' && (
                 <>
@@ -289,13 +311,23 @@ function AddProduto() {
           </div>
           <div className="form-group">
             <label>Fornecedor:</label>
-            <select value={fornecedor} onChange={handleFornecedorChange} required>
-              <option value="">Selecione um fornecedor</option>
-              {fornecedores.map(f => (
-                <option key={f.id} value={f.id}>{f.nome}</option>
-              ))}
-              <option value="novo">Cadastrar novo fornecedor</option>
-            </select>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <select value={fornecedor} onChange={handleFornecedorChange} required>
+                <option value="">Selecione um fornecedor</option>
+                {fornecedores.map(f => (
+                  <option key={f.id} value={f.id}>{f.nome}</option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className="btn-add-icone-venda"
+                onClick={() => setNovoFornecedor(true)}
+                title="Adicionar novo fornecedor"
+                aria-label="Adicionar novo fornecedor"
+              >
+                <FontAwesomeIcon icon={faUserPlus} />
+              </button>
+            </div>
           </div>
           {novoFornecedor && (
             <>
