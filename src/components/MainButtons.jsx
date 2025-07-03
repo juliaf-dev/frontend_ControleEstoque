@@ -28,7 +28,7 @@ export default function MainButtons() {
         <FontAwesomeIcon icon={faTruck} className="icon" />
         <span>Fornecedores</span>
       </button>
-      <button onClick={() => navigate('/clientes')}>
+      <button onClick={() => navigate('/clients')}>
         <FontAwesomeIcon icon={faUsers} className="icon" />
         <span>Clientes</span>
       </button>
